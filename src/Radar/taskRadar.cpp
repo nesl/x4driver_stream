@@ -967,7 +967,7 @@ void x4driver_data_ready(void)
         //printf(" %f, ",data_frame_normolized[i] );
     }*/
     //printf("}\n");
-
+    
     if (frame_counter >= max_number_of_frames)
     {
 
@@ -986,7 +986,11 @@ void x4driver_data_ready(void)
                // printf("}\n");
             }
         }
-        exit(0);
+        do
+	{
+	   cout << '\n' << "Press a key to continue...";
+	}while (cin.get()!= '\n');
+	exit(0);
 
     }
     else
