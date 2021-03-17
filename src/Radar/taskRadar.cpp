@@ -1005,9 +1005,15 @@ int sendOutputFrame(void)
     	{
 	    float32_t *tmp_data=out_data_buffer.front();
 	    out_data_buffer.pop();
-	    for(int i=0;i<sizeof(tmp_data)/sizeof(float);i++)
-		    printf("%f,",tmp_data[i]);
-	    printf("\n");
+	    int cnt=0;
+	    printf("{");
+	    while(tmp_data[cnt]!=0)
+	    {
+		   printf("%f,",tmp_data[cnt]);
+		   cnt++;
+	    }
+	   
+	    printf("}\n");
 	}
     }
     return 0;
