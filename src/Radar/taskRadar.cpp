@@ -994,7 +994,7 @@ void x4driver_data_ready(void)
 	out_data_buffer.push(data_frame_normolized);
         output_data_buffer[frame_counter-1] = data_frame_normolized;
         number_of_cached_frames ++;
-        if (number_of_cached_frame == 14998)
+        if (number_of_cached_frames == 14998)
           printf("Frame 14998 received.");
     }
 }
