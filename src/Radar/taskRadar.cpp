@@ -1007,7 +1007,7 @@ int sendOutputFrame(void)
 	    out_data_buffer.pop();
 	    int cnt=0;
 	    printf("{");
-	    while(tmp_data[cnt]!=0)
+	    while(tmp_data[cnt]!=NULL)
 	    {
 		   printf("%f,",tmp_data[cnt]);
 		   cnt++;
