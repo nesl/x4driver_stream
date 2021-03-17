@@ -887,12 +887,12 @@ void x4driver_data_ready(void)
 
     if(XEP_ERROR_X4DRIVER_OK == status)
     {
-            // while (count-- > 0) { 
-            //     // you might want to check for out-of-disk-space here, too 
-            //     fprintf(f, "%d,%s,%f\n", data->someValue, data->someString, data->someSample); 
-            //     ++data; 
-            // } 
-           
+            // while (count-- > 0) {
+            //     // you might want to check for out-of-disk-space here, too
+            //     fprintf(f, "%d,%s,%f\n", data->someValue, data->someString, data->someSample);
+            //     ++data;
+            // }
+
 
             // g_readDone = 1;
             // printf("frame :%d.\n", frame_counter);
@@ -902,16 +902,16 @@ void x4driver_data_ready(void)
             // char buffer[2] = " ";
             // sprintf(buffer, "%d", g_antNum);
             // char *filename=strcat(buffer,".csv");
-            // FILE *f = fopen(filename, "a"); 
-            // if (f == NULL) return; 
+            // FILE *f = fopen(filename, "a");
+            // if (f == NULL) return;
 
             // for (int i=0;i < (sizeof (data_frame_normolized) /sizeof (data_frame_normolized[0]));i++) {
             //     fprintf(f, "%lf,",data_frame_normolized[i]);
             // }
             // fprintf(f,"\n");
-            //  fclose(f); 
+            //  fclose(f);
             //  usleep(1000);
-            
+
             // for (int i=0;i < (sizeof (data_frame_normolized) /sizeof (data_frame_normolized[0]));i++) {
             //     printf("%lf,",data_frame_normolized[i]);
             // }
@@ -919,7 +919,7 @@ void x4driver_data_ready(void)
 
 
         // printf("g_antNum 5:%d.\n", g_antNum);
-        // return; 
+        // return;
             // g_frameCache.AddData(g_num_antnum, frame_counter,data_frame_normolized, fdata_count);
             // g_frameCache.buffer_write(g_num_antnum, frame_counter,data_frame_normolized, fdata_count);
 
@@ -969,13 +969,13 @@ void x4driver_data_ready(void)
     }*/
     //printf("}\n");
 
-    if (frame_counter >= max_number_of_frames) 
+    if (frame_counter >= max_number_of_frames)
     {
 
         pullUpDnControl(X4_GPIO_INT, PUD_UP);
         //printf("%d", number_of_cached_frames);
         for (int print_frame = 0; print_frame < number_of_cached_frames; print_frame++)
-        {   
+        {
             if(output_data_buffer[print_frame] != NULL)
             {
                // printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
@@ -999,13 +999,16 @@ void x4driver_data_ready(void)
 }
 int sendOutputFrame(void)
 {
+    int num_frame_sent = 0;
     for(;;)
     {
     	if(!out_data_buffer.empty())
     	{
 	    float32_t *tmp_data=out_data_buffer.front();
+      num_frame_sent ++;
 	    out_data_buffer.pop();
 	    for(int i=0;i<sizeof(tmp_data)/sizeof(float);i++)
+        printf("Frame: %d,",num_frame_sent);
 		    printf("%f,",tmp_data[i]);
 	    printf("\n");
 	}
@@ -1184,7 +1187,7 @@ void switchAnt(int rfNum)
             //digitalWrite(SWITCH_A, HIGH);
             //digitalWrite(SWITCH_B, HIGH);
             //digitalWrite(SWITCH_C, HIGH);
-            
+
             digitalWrite(SWITCH_A, HIGH);
             digitalWrite(SWITCH_B, LOW);
             digitalWrite(SWITCH_C, LOW);
@@ -1192,7 +1195,7 @@ void switchAnt(int rfNum)
         }
         case 3:  //010
         {
-        
+
             digitalWrite(SWITCH_A, LOW);
             digitalWrite(SWITCH_B, HIGH);
             digitalWrite(SWITCH_C, LOW);
@@ -1266,7 +1269,7 @@ int taskRadar(void)
     status = task_radar_init(&x4driver);
 
     // FILE *f;
- 
+
     // f = fopen ("1.csv", "w");
     // fclose(f);
 
@@ -1287,7 +1290,7 @@ int taskRadar(void)
 
     // f = fopen ("7.csv", "w");
     // fclose(f);
-    
+
 
 #ifdef DEBUG
     if(status == XT_SUCCESS)
@@ -1536,7 +1539,7 @@ int taskRadar(void)
            // return 0;
         }
         frameend = frame_counter; */
-        
+
         ;
         // if(g_readDone == 1)
         // {
@@ -1544,20 +1547,20 @@ int taskRadar(void)
         //     frameend = frame_counter;
         //     g_readDone = 0;
         //     x4driver_start_sweep(x4driver);
-        //     g_antNum+=1;           
+        //     g_antNum+=1;
         //     if(g_antNum  > 7)
         //     {
         //         g_antNum  = 1;
-           
+
         //     }
         //     switchAnt(g_antNum);
         //     //sleep(1);
-            
+
         //     usleep(1000);
         //  // digitalWrite(IOctl,LOW );
         //     usleep(50);
         //    // digitalWrite(IOctl, HIGH);*/
-            
+
 
         // }
     }
