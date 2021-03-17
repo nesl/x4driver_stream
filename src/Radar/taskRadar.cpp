@@ -1007,7 +1007,7 @@ int sendOutputFrame(void)
             num_frame_sent ++;
 	    out_data_buffer.pop();
 	    int cnt=0;
-	    printf("Frame: {");
+	    printf("Frame %d: {",num_frame_sent);
 	    while(tmp_data[cnt]!=NULL)
 	    {
 		   printf("%f,",tmp_data[cnt]);
@@ -1016,7 +1016,9 @@ int sendOutputFrame(void)
 	   
 	    printf("}\n");
 	}
+
     }
+    
     return 0;
 }
 
