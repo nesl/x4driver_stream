@@ -76,7 +76,6 @@ int _Send(int sockfd, char* context, int len)
     fd_set fde;
     FD_ZERO(&fde);
     fd_set fdr;
-https://github.com/nesl/x4driver_stream.git
     FD_SET(sockfd, &fdr);
     FD_SET(sockfd, &fdw);
     FD_SET(sockfd, &fde);
@@ -1007,8 +1006,8 @@ int sendOutputFrame(void)
 	    float32_t *tmp_data=out_data_buffer.front();
       num_frame_sent ++;
 	    out_data_buffer.pop();
+      printf("Frame: %d,",num_frame_sent);
 	    for(int i=0;i<sizeof(tmp_data)/sizeof(float);i++)
-        printf("Frame: %d,",num_frame_sent);
 		    printf("%f,",tmp_data[i]);
 	    printf("\n");
 	}
