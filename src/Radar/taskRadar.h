@@ -10,6 +10,7 @@
  * @return nothing
  */
 int taskRadar(void);
+int sendOutputFrame(void);
 
 /**
  * @brief Initialize Radar task.

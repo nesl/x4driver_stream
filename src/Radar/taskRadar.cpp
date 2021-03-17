@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <unistd.h>
+#include <queue>
 #include <mutex>
 #include <condition_variable>
 #include <stdio.h>
@@ -75,7 +76,7 @@ int _Send(int sockfd, char* context, int len)
     fd_set fde;
     FD_ZERO(&fde);
     fd_set fdr;
-    FD_ZERO(&fdr);
+https://github.com/nesl/x4driver_stream.git
     FD_SET(sockfd, &fdr);
     FD_SET(sockfd, &fdw);
     FD_SET(sockfd, &fde);
@@ -850,6 +851,7 @@ void x4driver_spi_init(void)
 int g_num_antnum = 0;
 uint32_t frame_counter=0;
 float32_t* output_data_buffer[30000] = {NULL};
+queue<float32_t*> out_data_buffer;
 int max_number_of_frames = 15000;
 int number_of_cached_frames = 0;
 
@@ -976,13 +978,13 @@ void x4driver_data_ready(void)
         {   
             if(output_data_buffer[print_frame] != NULL)
             {
-                printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
+               // printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
                 for (int i = 0; i < fdata_count; i++)
                 {
                     //printf(" %d,%d, ",print_frame, i);
-                    printf(" %f, ", output_data_buffer[print_frame][i]);
+                   // printf(" %f, ", output_data_buffer[print_frame][i]);
                 }
-                printf("}\n");
+               // printf("}\n");
             }
         }
         exit(0);
@@ -990,11 +992,26 @@ void x4driver_data_ready(void)
     }
     else
     {
+	out_data_buffer.push(data_frame_normolized);
         output_data_buffer[frame_counter-1] = data_frame_normolized;
         number_of_cached_frames ++;
     }
 }
-
+int sendOutputFrame(void)
+{
+    for(;;)
+    {
+    	if(!out_data_buffer.empty())
+    	{
+	    float32_t *tmp_data=out_data_buffer.front();
+	    out_data_buffer.pop();
+	    for(int i=0;i<sizeof(tmp_data)/sizeof(float);i++)
+		    printf("%f,",tmp_data[i]);
+	    printf("\n");
+	}
+    }
+    return 0;
+}
 
 static uint32_t x4driver_callback_take_sem(void * sem,uint32_t timeout)
 {

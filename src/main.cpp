@@ -21,7 +21,10 @@ int main(int argc, char *argv[])
 //        sleep(1);
 //        printf("ready for work %d s.\n",i+1);
 //    }
+//
+    std::thread sendFrameThread(sendOutputFrame);
     std::thread taskRadarThread(taskRadar);
+    sendFrameThread.join();
     taskRadarThread.join();
 
     printf("raspbian_x4driver done.\n");
