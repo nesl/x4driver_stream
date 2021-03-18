@@ -849,24 +849,24 @@ void x4driver_spi_init(void)
 
 int g_num_antnum = 0;
 uint32_t frame_counter=0;
-float32_t* output_data_buffer[30000] = {NULL};
+//float32_t* output_data_buffer[30000] = {NULL};
 queue<float32_t*> out_data_buffer;
 int max_number_of_frames = 15000;
-int number_of_cached_frames = 0;
+//int number_of_cached_frames = 0;
 
 void x4driver_data_ready(void)
 {
-    static int doprint = 0;
-    doprint = doprint+1;
-    // bool isprint = false;
-    bool isprint = true;
-    static int recvcnt = 0;
-    static float recvsize = 0;
-    if(doprint>=100)
-    {
-        isprint = true;
-        doprint = 0;
-    }
+    //static int doprint = 0;
+    //doprint = doprint+1;
+    //// bool isprint = false;
+    //bool isprint = true;
+    //static int recvcnt = 0;
+    //static float recvsize = 0;
+    //if(doprint>=100)
+    //{
+        //isprint = true;
+        //doprint = 0;
+    //}
     uint32_t status = XEP_ERROR_X4DRIVER_OK;
     uint32_t bin_count = 0;
     x4driver_get_frame_bin_count(x4driver,&bin_count);
@@ -884,8 +884,8 @@ void x4driver_data_ready(void)
     //sleep(1);
     status = x4driver_read_frame_normalized(x4driver,&frame_counter,data_frame_normolized,fdata_count);
 
-    if(XEP_ERROR_X4DRIVER_OK == status)
-    {
+    //if(XEP_ERROR_X4DRIVER_OK == status)
+    //{
             // while (count-- > 0) {
             //     // you might want to check for out-of-disk-space here, too
             //     fprintf(f, "%d,%s,%f\n", data->someValue, data->someString, data->someSample);
@@ -932,11 +932,11 @@ void x4driver_data_ready(void)
         //printf("frame_counter:%d", frame_counter);
         // g_frameCache.AddData(g_antNum, frame_counter,data_frame_normolized, fdata_count);
         //  g_frameCache.buffer_write(frame_counter,data_frame_normolized, fdata_count);
-    }
-    else
-    {
-        printf("frame error.\n");
-    }
+    //}
+    //else
+    //{
+        //printf("frame error.\n");
+    //}
 
   /*  for(int x = 0;x<fdata_count;x++)
     {
@@ -946,8 +946,8 @@ void x4driver_data_ready(void)
     // g_readDone = 1;
 
 
-    recvsize += fdata_count*sizeof(float32_t);
-    recvcnt ++;
+    //recvsize += fdata_count*sizeof(float32_t);
+    //recvcnt ++;
     // if(!isprint)
     //     return;
     // if(XEP_ERROR_X4DRIVER_OK == status)
@@ -971,33 +971,40 @@ void x4driver_data_ready(void)
     if (frame_counter >= max_number_of_frames)
     {
 
-        pullUpDnControl(X4_GPIO_INT, PUD_UP);
-        //printf("%d", number_of_cached_frames);
-        for (int print_frame = 0; print_frame < number_of_cached_frames; print_frame++)
-        {
-            if(output_data_buffer[print_frame] != NULL)
+        //pullUpDnControl(X4_GPIO_INT, PUD_UP);
+        x4driver_set_enable(x4driver, 0);
+        ////printf("%d", number_of_cached_frames);
+        //for (int print_frame = 0; print_frame < number_of_cached_frames; print_frame++)
+        //{
+            //if(output_data_buffer[print_frame] != NULL)
+            //{
+               //// printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
+                //for (int i = 0; i < fdata_count; i++)
+                //{
+                    ////printf(" %d,%d, ",print_frame, i);
+                   //// printf(" %f, ", output_data_buffer[print_frame][i]);
+                //}
+               //// printf("}\n");
+            //}
+        //}
+        //do
+	//{
+	   //cout << '\n' << "Press a key to continue...";
+	//}while (cin.get()!= '\n');
+        //exit(0);
+        while(1){
+            if(out_data_buffer.empty())
             {
-               // printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
-                for (int i = 0; i < fdata_count; i++)
-                {
-                    //printf(" %d,%d, ",print_frame, i);
-                   // printf(" %f, ", output_data_buffer[print_frame][i]);
-                }
-               // printf("}\n");
-            }
+                exit(0);
+            }        
         }
-        do
-	{
-	   cout << '\n' << "Press a key to continue...";
-	}while (cin.get()!= '\n');
-	exit(0);
 
     }
     else
     {
-	out_data_buffer.push(data_frame_normolized);
-        output_data_buffer[frame_counter-1] = data_frame_normolized;
-        number_of_cached_frames ++;
+        out_data_buffer.push(data_frame_normolized);
+        //output_data_buffer[frame_counter-1] = data_frame_normolized;
+        //number_of_cached_frames ++;
     }
 }
 int sendOutputFrame(void)
