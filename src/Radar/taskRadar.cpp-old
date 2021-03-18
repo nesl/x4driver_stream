@@ -18,11 +18,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/types.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -853,24 +853,24 @@ void x4driver_spi_init(void)
 
 int g_num_antnum = 0;
 uint32_t frame_counter=0;
-//float32_t* output_data_buffer[30000] = {NULL};
+float32_t* output_data_buffer[30000] = {NULL};
 queue<float32_t*> out_data_buffer;
 int max_number_of_frames = 15000;
-//int number_of_cached_frames = 0;
+int number_of_cached_frames = 0;
 
 void x4driver_data_ready(void)
 {
-    //static int doprint = 0;
-    //doprint = doprint+1;
-    //// bool isprint = false;
-    //bool isprint = true;
-    //static int recvcnt = 0;
-    //static float recvsize = 0;
-    //if(doprint>=100)
-    //{
-        //isprint = true;
-        //doprint = 0;
-    //}
+    static int doprint = 0;
+    doprint = doprint+1;
+    // bool isprint = false;
+    bool isprint = true;
+    static int recvcnt = 0;
+    static float recvsize = 0;
+    if(doprint>=100)
+    {
+        isprint = true;
+        doprint = 0;
+    }
     uint32_t status = XEP_ERROR_X4DRIVER_OK;
     uint32_t bin_count = 0;
     x4driver_get_frame_bin_count(x4driver,&bin_count);
@@ -888,8 +888,8 @@ void x4driver_data_ready(void)
     //sleep(1);
     status = x4driver_read_frame_normalized(x4driver,&frame_counter,data_frame_normolized,fdata_count);
 
-    //if(XEP_ERROR_X4DRIVER_OK == status)
-    //{
+    if(XEP_ERROR_X4DRIVER_OK == status)
+    {
             // while (count-- > 0) {
             //     // you might want to check for out-of-disk-space here, too
             //     fprintf(f, "%d,%s,%f\n", data->someValue, data->someString, data->someSample);
@@ -936,11 +936,11 @@ void x4driver_data_ready(void)
         //printf("frame_counter:%d", frame_counter);
         // g_frameCache.AddData(g_antNum, frame_counter,data_frame_normolized, fdata_count);
         //  g_frameCache.buffer_write(frame_counter,data_frame_normolized, fdata_count);
-    //}
-    //else
-    //{
-        //printf("frame error.\n");
-    //}
+    }
+    else
+    {
+        printf("frame error.\n");
+    }
 
   /*  for(int x = 0;x<fdata_count;x++)
     {
@@ -950,8 +950,8 @@ void x4driver_data_ready(void)
     // g_readDone = 1;
 
 
-    //recvsize += fdata_count*sizeof(float32_t);
-    //recvcnt ++;
+    recvsize += fdata_count*sizeof(float32_t);
+    recvcnt ++;
     // if(!isprint)
     //     return;
     // if(XEP_ERROR_X4DRIVER_OK == status)
@@ -975,56 +975,51 @@ void x4driver_data_ready(void)
     if (frame_counter >= max_number_of_frames)
     {
 
-        //pullUpDnControl(X4_GPIO_INT, PUD_UP);
-        x4driver_set_enable(x4driver, 0);
-        ////printf("%d", number_of_cached_frames);
-        //for (int print_frame = 0; print_frame < number_of_cached_frames; print_frame++)
-        //{
-            //if(output_data_buffer[print_frame] != NULL)
-            //{
-               //// printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
-                //for (int i = 0; i < fdata_count; i++)
-                //{
-                    ////printf(" %d,%d, ",print_frame, i);
-                   //// printf(" %f, ", output_data_buffer[print_frame][i]);
-                //}
-               //// printf("}\n");
-            //}
-        //}
-        //do
-	//{
-	   //cout << '\n' << "Press a key to continue...";
-	//}while (cin.get()!= '\n');
-        //exit(0);
-        while(1){
-            if(out_data_buffer.empty())
+        pullUpDnControl(X4_GPIO_INT, PUD_UP);
+        //printf("%d", number_of_cached_frames);
+        for (int print_frame = 0; print_frame < number_of_cached_frames; print_frame++)
+        {
+            if(output_data_buffer[print_frame] != NULL)
             {
-                exit(0);
-            }        
+               // printf("Size:%d,New Frame Data Normolized(%d){", fdata_count, print_frame);
+                for (int i = 0; i < fdata_count; i++)
+                {
+                    //printf(" %d,%d, ",print_frame, i);
+                   // printf(" %f, ", output_data_buffer[print_frame][i]);
+                }
+               // printf("}\n");
+            }
         }
+        do
+	{
+	  // cout << '\n' << "Press a key to continue...";
+	}while (cin.get()!= '\n');
+	exit(0);
 
     }
     else
     {
-        out_data_buffer.push(data_frame_normolized);
-        //output_data_buffer[frame_counter-1] = data_frame_normolized;
-        //number_of_cached_frames ++;
+	out_data_buffer.push(data_frame_normolized);
+        output_data_buffer[frame_counter-1] = data_frame_normolized;
+        number_of_cached_frames ++;
     }
 }
 int sendOutputFrame(void)
 {
-     int c=socket(AF_INET,SOCK_STREAM,0);
-     int s=socket(AF_INET,SOCK_STREAM,0);
-     struct sockaddr_in adr_s;
-     adr_s.sin_family = AF_INET;
-     adr_s.sin_addr.s_addr = inet_addr("127.0.0.1");
-     adr_s.sin_port =htons(1235);
-     bind(s, (struct sockaddr *)&adr_s, sizeof(adr_s));
-     if(connect(c,(struct sockaddr*)&adr_s, sizeof(adr_s))<0)
-	 perror("connect");
+    int c=socket(AF_INET,SOCK_STREAM,0);
+    int s=socket(AF_INET,SOCK_STREAM,0);
+    struct sockaddr_in adr_s;
+    adr_s.sin_family = AF_INET;
+    adr_s.sin_addr.s_addr = inet_addr("127.0.0.1");
+    adr_s.sin_port =htons(1235);
+    bind(s, (struct sockaddr *)&adr_s, sizeof(adr_s));
+    if(connect(c,(struct sockaddr*)&adr_s, sizeof(adr_s))<0)
+        perror("connect");
+
     int num_frame_sent = 0;
     for(;;)
-    {
+    {  
+	float32_t socketBuffer[160];
     	if(!out_data_buffer.empty())
     	{
 	    float32_t *tmp_data=out_data_buffer.front();
@@ -1035,12 +1030,14 @@ int sendOutputFrame(void)
 	    while(tmp_data[cnt]!=NULL)
 	    {
 		   printf("%f,",tmp_data[cnt]);
+		   socketBuffer[cnt]=tmp_data[cnt];
 		   cnt++;
 	    }
-	    //if(send(c, tmp_data, 160*sizeof(float),0)<0)
-		   // perror("send");
+	    if(send(c, tmp_data, 160*sizeof(float), 0)<0)
+		    perror("send");
 
 	    printf("}\n");
+	    
 	}
 
     }
