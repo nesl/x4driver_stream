@@ -1030,17 +1030,19 @@ int sendOutputFrame(void)
 	    float32_t *tmp_data=out_data_buffer.front();
             num_frame_sent ++;
 	    out_data_buffer.pop();
-	    int cnt=0;
-	    printf("Frame %d: {",num_frame_sent);
-	    while(tmp_data[cnt]!=NULL)
-	    {
-		   printf("%f,",tmp_data[cnt]);
-		   cnt++;
-	    }
-	    //if(send(c, tmp_data, 160*sizeof(float),0)<0)
-		   // perror("send");
-
-	    printf("}\n");
+	    
+        //int cnt=0;
+	    //printf("Frame %d: {",num_frame_sent);
+	    //while(tmp_data[cnt]!=NULL)
+	    //{
+		   //printf("%f,",tmp_data[cnt]);
+		   //cnt++;
+	    //}
+        //printf("}\n");
+        
+	    if(send(c, tmp_data, 160*sizeof(float),0)<0)
+		    perror("send");
+	    
 	}
 
     }
