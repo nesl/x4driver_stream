@@ -1289,7 +1289,7 @@ int taskRadar(void)
     int xgl_dacmin = 949;//949;
     int xgl_dacmax = 1100;//1100
     xtx4_dac_step_t xgl_dacstep = DAC_STEP_1;
-    float xgl_fps = 1400;
+    float xgl_fps = 1000;
     int xgl_getiq = 1;
     xtx4_sweep_trigger_control_mode_t xgl_sweep_trigger_control = SWEEP_TRIGGER_X4;
     xtx4_tx_power_t xgl_tx_power = TX_POWER_HIGH;
