@@ -33,9 +33,6 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-
-
-
 int g_readDone = 0;
 int g_antNum = 1;
 int _Connect(char* ip, uint16_t port)
@@ -860,15 +857,6 @@ uint32_t frame_counter=0;
 queue<float32_t*> out_data_buffer;
 int max_number_of_frames = 15000;
 //int number_of_cached_frames = 0;
-struct Listnode {
-   float32_t* frame_data;
-   struct Listnode *next;
-};
-
-struct Listnode *head = NULL;
-struct Listnode *tail = NULL;
-struct Listnode *reader = NULL;
-
 
 void x4driver_data_ready(void)
 {
@@ -1009,7 +997,7 @@ void x4driver_data_ready(void)
 	//}while (cin.get()!= '\n');
         //exit(0);
         while(1){
-            if(head == NULL)
+            if(out_data_buffer.empty())
             {
                 exit(0);
             }        
@@ -1018,21 +1006,7 @@ void x4driver_data_ready(void)
     }
     else
     {
-        struct Listnode *temp_node= (struct Listnode*) malloc(sizeof(struct Listnode));
-        temp_node -> frame_data = data_frame_normolized;
-        temp_node -> next = NULL;
-        
-        if (tail==NULL)
-            {
-                head = temp_node;
-                tail = temp_node;
-            }
-        else
-            {
-                tail -> next = temp_node;
-                tail = temp_node;
-            }
-        //out_data_buffer.push(data_frame_normolized);
+        out_data_buffer.push(data_frame_normolized);
         //output_data_buffer[frame_counter-1] = data_frame_normolized;
         //number_of_cached_frames ++;
     }
@@ -1051,49 +1025,23 @@ int sendOutputFrame(void)
     int num_frame_sent = 0;
     for(;;)
     {
-    	//if(!out_data_buffer.empty())
-    	//{
-	    //float32_t *tmp_data=out_data_buffer.front();
-            //num_frame_sent ++;
-	    //out_data_buffer.pop();
-	    //int cnt=0;
+    	if(!out_data_buffer.empty())
+    	{
+	    float32_t *tmp_data=out_data_buffer.front();
+            num_frame_sent ++;
+	    out_data_buffer.pop();
+	    
+        //int cnt=0;
 	    //printf("Frame %d: {",num_frame_sent);
 	    //while(tmp_data[cnt]!=NULL)
 	    //{
 		   //printf("%f,",tmp_data[cnt]);
 		   //cnt++;
 	    //}
+        //printf("}\n");
         
-        if (head!=NULL)
-        {
-            float32_t *tmp_data = head->frame_data;            
-            
-            int cnt=0;
-            printf("Frame %d: {",num_frame_sent);
-            while(tmp_data[cnt]!=NULL)
-            {
-               printf("%f,",tmp_data[cnt]);
-               cnt++;
-            }
-            printf("}\n");
-            num_frame_sent ++;
-           // if(send(c, tmp_data, 160*sizeof(float),0)<0)
-           // perror("send");
-            
-            //free tmp_data;
-            //if (head->next != NULL)
-            //{
-                //reader = head;
-                //head = head -> next;
-                //free(reader);
-                //reader = NULL;
-            //}
-            //else
-            //{
-                //free(head);
-                //head = NULL;
-            //}
-
+	    if(send(c, tmp_data, 160*sizeof(float),0)<0)
+		    perror("send");
 	    
 	}
 
