@@ -865,7 +865,7 @@ struct Listnode {
    struct Listnode *next;
 };
 
-struct Listnode *head = NULL;
+struct Listnode *header = NULL;
 struct Listnode *tail = NULL;
 struct Listnode *reader = NULL;
 
@@ -1009,7 +1009,7 @@ void x4driver_data_ready(void)
 	//}while (cin.get()!= '\n');
         //exit(0);
         while(1){
-            if(head == NULL)
+            if(header == NULL)
             {
                 exit(0);
             }        
@@ -1024,8 +1024,10 @@ void x4driver_data_ready(void)
         
         if (tail==NULL)
             {
-                head = temp_node;
+		//printf("here\n");
+                header = temp_node;
                 tail = temp_node;
+		//printf("there\n");
             }
         else
             {
@@ -1064,9 +1066,9 @@ int sendOutputFrame(void)
 		   //cnt++;
 	    //}
         
-        if (head!=NULL)
+        if (header!=NULL&&header->next!=NULL)
         {
-            float32_t *tmp_data = head->frame_data;            
+            float32_t *tmp_data = header->frame_data;            
             
             int cnt=0;
             printf("Frame %d: {",num_frame_sent);
@@ -1081,18 +1083,18 @@ int sendOutputFrame(void)
            // perror("send");
             
             //free tmp_data;
-            //if (head->next != NULL)
-            //{
-                //reader = head;
-                //head = head -> next;
-                //free(reader);
-                //reader = NULL;
-            //}
-            //else
-            //{
-                //free(head);
-                //head = NULL;
-            //}
+            if (header->next != NULL)
+            {
+                reader = header;
+                header = header -> next;
+                free(reader);
+                reader = NULL;
+            }
+            else
+            {
+                free(header);
+                header = NULL;
+            }
 
 	    
 	}
